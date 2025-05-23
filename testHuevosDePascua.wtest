@@ -1,12 +1,54 @@
 import huevosDePascua.*
+import nenes.*
+import caceria.*
+
 
 describe "group of tests" {
 
-  test "test 1" {
-    assert.equals(50+50, 100)
-  }
-  test "test 2" {
-    assert.that(true)
+  method initialize() {
+    flor.cantPetalos(7)
+    blisterHuevitos.cantHuevitos(14)
+    matrioshka.decoracion(flor)
+    matrioshka.otroHuevo(blisterHuevitos)
+    caceria.esconderHuevos([matrioshka, huevoRepostero, conejo, huevoMixto])
   }
 
+  test "Se inicia el juego escondiendo: matrioshka (con un blister de 14 huevos y decoracion una flor de 7 petalos), huevoRepostero, conejo, huevoMixto" {
+    assert.equals(7, matrioshka.decoracion().cantPetalos())
+    assert.equals(14, matrioshka.otroHuevo().cantHuevitos())
+    assert.equals(caceria.huevosEscondidos(), [matrioshka, huevoRepostero, conejo, huevoMixto])
+  }
+  test "El huevo de mayor calorias escondido es la matrioshka" {
+    assert.equals(matrioshka, caceria.huevoConMasCalorias())
+  }
+
+  test "Compilado de test" {
+    //Ana encuentra el primer huevo
+    const primerHuevo = caceria.huevosEscondidos().first()
+    caceria.encontrarPrimerHuevoPor(ana)
+    assert.notThat(caceria.faltaEncontrar(primerHuevo))
+    assert.equals(matrioshka.calorias(), ana.caloriasConsumidas())
+
+    //Quedan 3 huevos por encontrar y 2 con chocolate blanco
+    assert.equals(3, caceria.cantHuevosPorEncontrar())
+    assert.equals(2, caceria.cantHuevosConChocoBlanco())
+
+    //Todavia no fue encontrado el conejo
+    assert.that(caceria.faltaEncontrar(conejo))
+
+    //La lista de huevos con choco blanco debe ser igual a [huevoRepostero, huevoMixto]
+    assert.equals([huevoRepostero, huevoMixto], caceria.huevosConChocoBlanco())
+
+    //tito encuentra el huevoMixto
+    caceria.encontrarHuevoPor(huevoMixto, tito)
+    assert.notThat(caceria.faltaEncontrar(huevoMixto))
+
+    //jose encuentra los huevos restantes
+    caceria.encontrarHuevosRestantesPor(jose)
+    assert.that(caceria.huevosEscondidos().isEmpty())
+
+    //ana y jose quedan enfermos
+    assert.that(ana.enfermo())
+    assert.that(jose.enfermo())
+  }
 }
